@@ -7,6 +7,12 @@ pipeline {
     environment {
     PATH = "/opt/apache-maven-3.9.11/bin:$PATH"
     }
+
+    def dockerHubCredentialId = 'docker-cred'
+    def dockerHubUser = 'ashishwakde26'
+    def imageName = 'my-devops=app'
+    def imageTag = "${env.BUILD_NUMBER}"
+
     stages {
          stage("build") {
             steps {
@@ -23,6 +29,16 @@ pipeline {
             }
         }
     }
+    // --- 1. Build the Docker Image ---
+        stage('Build Image') {
+            steps {
+                script {
+                    echo "Building Docker image ${dockerHubUser}/${imageName}:${imageTag}"                    
+                    sh "docker build -t ${dockerHubUser}/${imageName}:${imageTag} ."                    
+                    echo "Docker image built successfully."
+                }
+            }
+        }
     }
 
 }
