@@ -31,14 +31,53 @@ pipeline {
                 sh "${scannerHome}/bin/sonar-scanner"
             }
         }
-    }
-    // --- 1. Build the Docker Image ---
+        }
+      //--- 1. Build the Docker Image ---
         stage('Build Image') {
             steps {
                 script {
                     echo "Building Docker image ${dockerHubUser}/${imageName}:${imageTag}"                    
                     sh "docker build -t ${dockerHubUser}/${imageName}:${imageTag} ."                    
                     echo "Docker image built successfully."
+                }
+            }
+        }
+
+        // --- 2. Login to Docker Hub ---
+        stage('Docker Login') {
+            steps {
+                // Use the 'withCredentials' block to securely access credentials
+                withCredentials([usernamePassword(
+                    credentialsId: dockerHubCredentialId,
+                    passwordVariable: 'DOCKER_PASSWORD',
+                    usernameVariable: 'DOCKER_USERNAME'
+                )]) {
+                    sh "echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin"
+                }
+            }
+        }
+
+        // --- 3. Push the Image to Docker Hub ---
+        stage('Push Image') {
+            steps {
+                script {
+                    def fullImageName = "${dockerHubUser}/${imageName}:${imageTag}"
+                    echo "Pushing image ${fullImageName} to Docker Hub..."
+                    
+                    sh "docker push ${fullImageName}"
+                    
+                    echo "Image push complete. Image URL: https://hub.docker.com/r/${dockerHubUser}/${imageName}/tags"
+                }
+            }
+        }
+
+        // --- 4. (Optional) Cleanup ---
+        stage('Cleanup') {
+            steps {
+                script {
+                    // Log out of Docker Hub and remove local image to free space
+                    sh "docker logout"
+                    sh "docker rmi ${dockerHubUser}/${imageName}:${imageTag}"
                 }
             }
         }
