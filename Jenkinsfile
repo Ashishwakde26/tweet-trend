@@ -9,7 +9,7 @@ pipeline {
 
         dockerHubCredentialId = 'docker-cred'
         dockerHubUser = 'ashishwakde26'
-        imageName = 'my-devops=app'
+        imageName = 'my-devops-app'
         imageTag = "${env.BUILD_NUMBER}"
 
     }
