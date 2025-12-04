@@ -5,13 +5,16 @@ pipeline {
         }
     }
     environment {
-    PATH = "/opt/apache-maven-3.9.11/bin:$PATH"
+        PATH = "/opt/apache-maven-3.9.11/bin:$PATH"
+
+        dockerHubCredentialId = 'docker-cred'
+        dockerHubUser = 'ashishwakde26'
+        imageName = 'my-devops=app'
+        imageTag = "${env.BUILD_NUMBER}"
+
     }
 
-    def dockerHubCredentialId = 'docker-cred'
-    def dockerHubUser = 'ashishwakde26'
-    def imageName = 'my-devops=app'
-    def imageTag = "${env.BUILD_NUMBER}"
+
 
     stages {
          stage("build") {
