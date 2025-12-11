@@ -1,24 +1,39 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: valaxy-rtp
-  namespace: valaxy
+  name: devops01-rtp
+  namespace: devops01
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app:  valaxy-rtp
+      app: devops01-rtp
   template:
     metadata:
       labels:
-        app:  valaxy-rtp
+        app: devops01-rtp
     spec:
+      # --- Changes Start Here ---
+
+      # 1. REMOVE imagePullSecrets for jfrogcred if your Docker Hub image is Public.
+      #    If the Docker Hub image is Private, you will need to:
+      #    a. Create a new ImagePullSecret for Docker Hub.
+      #    b. Update the name below to reference that new secret.
+      #    
+      #    Assuming your Docker Hub image is PUBLIC for simplicity:
       imagePullSecrets:
-      - name: jfrogcred 
+      # - name: jfrogcred 
+      #    <--- Uncomment and change 'jfrogcred' to your Docker Hub secret name 
+      #         if your Docker Hub image is PRIVATE.
+
       containers:
-      - name:  valaxy-rtp
-        image: valaxy05.jfrog.io/valaxy-docker/ttrend:2.1.4
+      - name: devops01-rtp
+        # 2. UPDATE the image path to point to your Docker Hub repository.
+        image: ashishwakde26/my-devops-app:17
         imagePullPolicy: Always
+        
+      # --- Changes End Here ---
+      
         ports:
         - containerPort: 8000
         env:
@@ -30,4 +45,3 @@ spec:
           value: "9703354-52rXHD6EeOQeYyhtNz1w8UVOgbcLcgOo4O7MB6WV3"
         - name: ACCESS_TOKEN_SECRET
           value: "zBThlZDEp8qnu7NwwdHNth8eg3Rf9zqbvUEFUTaZtN2SF"
-
