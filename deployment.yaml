@@ -29,7 +29,7 @@ spec:
       containers:
       - name: devops01-rtp
         # 2. UPDATE the image path to point to your Docker Hub repository.
-        image: ashishwakde26/my-devops-app:17
+        image: ashishwakde26/my-devops-app:latest
         imagePullPolicy: Always
         
       # --- Changes End Here ---

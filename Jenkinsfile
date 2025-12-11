@@ -10,7 +10,7 @@ pipeline {
         dockerHubCredentialId = 'docker-cred'
         dockerHubUser = 'ashishwakde26'
         imageName = 'my-devops-app'
-        imageTag = "${env.BUILD_NUMBER}"
+        imageTag = "latest"
 
     }
 
@@ -78,6 +78,14 @@ pipeline {
                     // Log out of Docker Hub and remove local image to free space
                     sh "docker logout"
                     sh "docker rmi ${dockerHubUser}/${imageName}:${imageTag}"
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    sh './deploy.sh'
                 }
             }
         }
